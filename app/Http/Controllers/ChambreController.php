@@ -10,11 +10,26 @@ class ChambreController extends Controller
     /**
      * Afficher la liste des chambres.
      */
-    public function index()
+    /*public function index()
     {
         $chambres = Chambre::all();
         return view('chambres.index', compact('chambres'));
+    }*/
+
+    public function index(Request $request)
+    {
+        $query = Chambre::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('type', 'like', "%{$search}%");
+        }
+
+        $chambres = $query->paginate(10);
+
+        return view('chambres.index', compact('chambres'));
     }
+
 
     /**
      * Afficher le formulaire de création d’une chambre.
@@ -86,34 +101,5 @@ class ChambreController extends Controller
         return redirect()->route('chambres.index')
                          ->with('success', 'Chambre supprimée avec succès.');
     }
-
-    public function rechercher(Request $request)
-{
-    $requete = Chambre::query();
-
-    if ($request->filled('numero')) {
-        $requete->where('numero', 'like', '%' . $request->numero . '%');
-    }
-
-    if ($request->filled('type')) {
-        $requete->where('type', 'like', '%' . $request->type . '%');
-    }
-
-    if ($request->filled('prix_min')) {
-        $requete->where('prix', '>=', $request->prix_min);
-    }
-
-    if ($request->filled('prix_max')) {
-        $requete->where('prix', '<=', $request->prix_max);
-    }
-
-    if ($request->filled('disponible')) {
-        $requete->where('disponible', $request->disponible);
-    }
-
-    $chambres = $requete->paginate(10);
-
-    return view('chambres.index', compact('chambres'));
-}
 
 }

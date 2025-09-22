@@ -29,8 +29,6 @@ Route::get('/', function () {
 // Chambres
 Route::resource('chambres', ChambreController::class);
 
-Route::get('/chambres/recherche', [ChambreController::class, 'rechercher'])->name('chambres.rechercher');
-
 // Locataires
 Route::resource('locataires', LocataireController::class);
 

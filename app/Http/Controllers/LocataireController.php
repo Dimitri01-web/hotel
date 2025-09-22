@@ -10,9 +10,26 @@ class LocataireController extends Controller
     /**
      * Afficher la liste des locataires.
      */
-    public function index()
+    //public function index()
+    //{
+    //    $locataires = Locataire::all();
+    //    return view('locataires.index', compact('locataires'));
+    //}
+
+
+    public function index(Request $request)
     {
-        $locataires = Locataire::all();
+        $query = Locataire::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('nom', 'like', "%{$search}%")
+            ->orWhere('prenom', 'like', "%{$search}%")
+            ->orWhere('telephone', 'like', "%{$search}%");
+        }
+
+        $locataires = $query->paginate(10);
+
         return view('locataires.index', compact('locataires'));
     }
 
@@ -89,4 +106,30 @@ class LocataireController extends Controller
         return redirect()->route('locataires.index')
                          ->with('success', 'Locataire supprimé avec succès.');
     }
+
+    public function rechercher(Request $request)
+{
+    $requete = Locataire::query();
+
+    if ($request->filled('nom')) {
+        $requete->where('nom', 'like', '%' . $request->nom . '%');
+    }
+
+    if ($request->filled('prenom')) {
+        $requete->where('prenom', 'like', '%' . $request->prenom . '%');
+    }
+
+    if ($request->filled('email')) {
+        $requete->where('email', 'like', '%' . $request->email . '%');
+    }
+
+    if ($request->filled('telephone')) {
+        $requete->where('telephone', 'like', '%' . $request->telephone . '%');
+    }
+
+    $locataires = $requete->paginate(10);
+
+    return view('locataires.index', compact('locataires'));
+}
+
 }

@@ -11,6 +11,20 @@
         Aucun locataire enregistré pour le moment.
     </div>
 @else
+<!-- Formulaire de recherche -->
+    <form method="GET" action="{{ route('locataires.index') }}" class="mb-3">
+        <div class="input-group">
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Rechercher par nom, prénom, téléphone..."
+                value="{{ request('search') }}"
+            >
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+        </div>
+    </form>
+
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
